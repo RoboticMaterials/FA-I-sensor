@@ -41,7 +41,7 @@ char cmd;
 
 int  continuous_mode=1;
 int  single_shot=0;
-int  touch_analysis=0;
+int  touch_analysis=1;
 
 
 void setup()
@@ -64,7 +64,6 @@ void setup()
          Serial.print(". Should have returned 0x21 but returned ");
       Serial.println(temp, HEX);
   } 
-  else Serial.println("Init");
     
   delay(100);
   proximity_value = readProximity();
@@ -98,7 +97,7 @@ void loop()
     
     if(continuous_mode || single_shot){
      Serial.print(proximity_value); Serial.print(","); Serial.print(fa2); //Serial.print(","); Serial.print(fa2derivative); 
-     single_shot=0;
+   
       if(touch_analysis){
         Serial.print(",");
         if((fa2deriv_last < -sensitivity && fa2derivative >sensitivity) || (fa2deriv_last > 50 && fa2derivative <-50)){ // zero crossing detected
@@ -114,8 +113,10 @@ void loop()
       }
     }
     
-    if(continuous_mode || single_shot)
+    if(continuous_mode || single_shot){
+      single_shot=0;
       Serial.println();
+    }
     
     // Do this last
     average_value=EA*proximity_value+(1-EA)*average_value;
