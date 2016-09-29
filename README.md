@@ -4,4 +4,8 @@ any compatible Arduino device that supports I2C, 3.3V and 5V. If you have ordere
 
 Connect the Arduino/Teensy to your serial port and launch the serial plotter from the Arduino IDE. You should see something like this:
 
+<img src="https://github.com/RoboticMaterials/FA-I-sensor/blob/master/screenshot_serialplotter.png" width=500>
+
+
+
 
