@@ -12,28 +12,28 @@ Switch to "Serial Monitor Mode". You will see three comma-separated values like 
 
 38859,-29261,0<br>
 40856,-22480,T<br>
-41211,-16091,0
-41479,-11532,0
-41454,-8048,0
-41195,-5375,0
-39526,-2094,0
-23951,14109,0
-12157,21670,0
-9185,18141,R
-8438,13445,0
-8213,9636,0
-8121,6837,0
-8081,4825,0
-8037,3421,0
+41211,-16091,0<br>
+41479,-11532,0<br>
+41454,-8048,0<br>
+41195,-5375,0<br>
+39526,-2094,0<br>
+23951,14109,0<br>
+12157,21670,0<br>
+9185,18141,R<br>
+8438,13445,0<br>
+8213,9636,0<br>
+8121,6837,0<br>
+8081,4825,0<br>
+8037,3421,0<br>
 
 The first value is the raw sensor reading that corresponds to proximity or force before or after contact, respectively. The second value is the FA-II value, and the third column indicates a detected touch ("T") or release ("R") event. 
 
 You can enter the following commands into the serial terminal:
 
-h: A list of possible commands
-c: Toggle continuous mode
-s: Single-shot measurement
-t: Toggle touch/release analysis
+h: A list of possible commands<br>
+c: Toggle continuous mode<br>
+s: Single-shot measurement<br>
+t: Toggle touch/release analysis<br>
 
 
 
