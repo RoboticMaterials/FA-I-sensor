@@ -10,10 +10,8 @@ The blue signal is the raw proximity/force reading. After touch, it roughly corr
 
 Switch to "Serial Monitor Mode". You will see three comma-separated values like those
 
-38859,-29261,0
-
-40856,-22480,T
-
+38859,-29261,0<br>
+40856,-22480,T<br>
 41211,-16091,0
 41479,-11532,0
 41454,-8048,0
