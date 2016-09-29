@@ -8,9 +8,8 @@
 #include <Wire.h>
 
 /***** USER PARAMETERS *****/
-int ir_current_ = 4; // range = [0, 20]. current = value * 10 mA
+int ir_current_ = 8;                     // range = [0, 20]. current = value * 10 mA
 int ambient_light_measurement_rate_ = 7; // range = [0, 7]. 1, 2, 3, 4, 5, 6, 8, 10 samples per second
-int ambient_light_auto_offset_ = 1; // on or off
 int averaging_function_ = 7;  // range [0, 7] measurements per run are 2**value, with range [1, 2**7 = 128]
 int proximity_freq_ = 0; // range = [0 , 3]. 390.625kHz, 781.250kHz, 1.5625MHz, 3.125MHz 
 unsigned long time;
@@ -27,26 +26,22 @@ unsigned long time;
 
 
 // Touch/release detection
-#define EA 0.3  // exponential average (cut-off frequency for high-pass filter)
-#define IGNORE_TIME 250 // time to ignore events after first touch/release events (in ms)
+#define EA 0.3  // exponential average weight parameter / cut-off frequency for high-pass filter
 
 /***** GLOBAL VARIABLES *****/
-unsigned int average_value;
-unsigned int proximity_value_;
+unsigned int proximity_value; // current proximity reading
+unsigned int average_value;   // low-pass filtered proximity reading
+signed int  fa2;              // FA-II value;
+signed int fa2derivative;     // Derivative of the FA-II value; 
+signed int fa2deriv_last;     // Last value of the derivative (for zero-crossing detection)
+signed int sensitivity=50;    // Sensitivity of touch/release detection, values closer to zero increase sensitivity
+
 unsigned long start_time;
-unsigned long ignore_time;
-char buf[20];
 char cmd;
 
 int  continuous_mode=1;
 int  single_shot=0;
-int  touch_analysis=1;
-
-struct TouchEvent {
-  unsigned int ttouch;
-  unsigned int trelease;
-  unsigned int color;
-} touchevent;
+int  touch_analysis=0;
 
 
 void setup()
@@ -55,7 +50,6 @@ void setup()
   Wire.begin();
   delay(1000);
 
-
   writeByte(AMBIENT_PARAMETER, 0x7F);
   writeByte(IR_CURRENT, ir_current_);
   writeByte(PROXIMITY_MOD, 1); // 1 recommended by Vishay
@@ -63,14 +57,19 @@ void setup()
   delay(50); 
 
   byte temp = readByte(PRODUCT_ID);
-  byte proximityregister = readByte(IR_CURRENT);
+  
+  //byte proximityregister = readByte(IR_CURRENT);
   if (temp != 0x21){  // Product ID Should be 0x21 for the 4010 sensor
       Serial.print("IR sensor failed to initialize: id = ");
          Serial.print(". Should have returned 0x21 but returned ");
       Serial.println(temp, HEX);
-  }
+  } 
+  else Serial.println("Init");
     
   delay(100);
+  proximity_value = readProximity();
+  average_value = proximity_value;
+  fa2=0;
 }
 
 void loop()
@@ -81,48 +80,46 @@ void loop()
                 cmd = Serial.read();
                 switch(cmd){
                  case 's' : single_shot = 1; break;
-                 case 'a' : if(touch_analysis==0) touch_analysis=1; else touch_analysis=0; break;
+                 case 't' : if(touch_analysis==0) touch_analysis=1; else touch_analysis=0; break;
                  case 'c' : if(continuous_mode==0) continuous_mode=1; else continuous_mode=0; break;
                  case 'h' : Serial.println("c: Toggle continuous mode");
                             Serial.println("s: Single-shot measurement"); 
+                            Serial.println("t: Toggle touch/release analysis");
                             break;               
                 }
 
         }
     
    // Read sensor values
-    proximity_value_ = readProximity();
-    if(continuous_mode || single_shot){
-     //sprintf(buf, "%6u,%6d", proximity_value_,average_value-proximity_value_);
-     sprintf(buf,"%6u",proximity_value_);
-     //sprintf(buf, "%6d",average_value-proximity_value_);
-     Serial.print(buf);
-     Serial.println();
-     single_shot=0;
-    }
-    if(millis()>ignore_time){
-    if(((signed int) (average_value-proximity_value_)) < -1000){ 
-      touchevent.ttouch=millis();
-      touchevent.color=proximity_value_;
-      if(touch_analysis){
-       sprintf(buf,"T %d",touchevent.color);
-       Serial.println(buf);
-      }
-      ignore_time=touchevent.ttouch+IGNORE_TIME;
-      
-    }
-      else 
-    if(((signed int) (average_value-proximity_value_)) > 1000){ 
-      touchevent.trelease=millis();
-      if(touch_analysis){
-       Serial.println("R");
-      }
-      ignore_time=touchevent.trelease+IGNORE_TIME;
-    }
-    }  
+    proximity_value = readProximity();
+    fa2deriv_last=fa2derivative;
+    fa2derivative = (signed int) average_value-proximity_value-fa2;  
+    fa2 = (signed int) average_value-proximity_value;
     
-    average_value=EA*proximity_value_+(1-EA)*average_value;
-    while(millis()<time+LOOP_TIME); // enforce constant loop time
+    if(continuous_mode || single_shot){
+     Serial.print(proximity_value); Serial.print(","); Serial.print(fa2); //Serial.print(","); Serial.print(fa2derivative); 
+     single_shot=0;
+      if(touch_analysis){
+        Serial.print(",");
+        if((fa2deriv_last < -sensitivity && fa2derivative >sensitivity) || (fa2deriv_last > 50 && fa2derivative <-50)){ // zero crossing detected
+         // Serial.print(proximity_value); Serial.print(","); Serial.print(fa2); Serial.print(","); Serial.println(fa2derivative);
+          if(fa2<-sensitivity) // minimum
+           { Serial.print("T");}
+          else if(fa2>sensitivity) // maximum
+           {Serial.print("R");}
+       }
+       else{
+           Serial.print("0");  
+       }
+      }
+    }
+    
+    if(continuous_mode || single_shot)
+      Serial.println();
+    
+    // Do this last
+    average_value=EA*proximity_value+(1-EA)*average_value;
+    while(millis()<time+LOOP_TIME); // enforce constant loop tim
 }
 
 
