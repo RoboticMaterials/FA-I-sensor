@@ -3,9 +3,20 @@
  * and Robotic Materials Inc.
  * 
  * This software is open source and can be used for any purpose. 
+ * 
+ * Written for Teensy LC
  */
 
-#include <Wire.h>
+/***** Library parameters ****/
+#define WIRE Wire1
+
+
+
+
+//#include <Wire.h>     // Use this library for Arduino
+#include <i2c_t3.h>     // Use this library for Teensy
+#include <math.h>
+
 
 /***** USER PARAMETERS *****/
 int ir_current_ = 8;                     // range = [0, 20]. current = value * 10 mA
@@ -47,7 +58,7 @@ int  touch_analysis=1;
 void setup()
 {
   Serial.begin(115200);
-  Wire.begin();
+  WIRE.begin();
   delay(1000);
 
   writeByte(AMBIENT_PARAMETER, 0x7F);
@@ -148,20 +159,20 @@ unsigned int readAmbient(){
 
 byte writeByte(byte address, byte data)
 {
-  Wire.beginTransmission(VCNL4010_ADDRESS);
-  Wire.write(address);
-  Wire.write(data);
-  return debug_endTransmission(Wire.endTransmission());
+  WIRE.beginTransmission(VCNL4010_ADDRESS);
+  WIRE.write(address);
+  WIRE.write(data);
+  return debug_endTransmission(WIRE.endTransmission());
 }
 
 byte readByte(byte address){
-  Wire.beginTransmission(VCNL4010_ADDRESS);
-  Wire.write(address);
+  WIRE.beginTransmission(VCNL4010_ADDRESS);
+  WIRE.write(address);
   
-  debug_endTransmission(Wire.endTransmission());
-  Wire.requestFrom(VCNL4010_ADDRESS, 1);
-  while(!Wire.available());
-  byte data = Wire.read();
+  debug_endTransmission(WIRE.endTransmission());
+  WIRE.requestFrom(VCNL4010_ADDRESS, 1);
+  while(!WIRE.available());
+  byte data = WIRE.read();
   return data;
 }
 
