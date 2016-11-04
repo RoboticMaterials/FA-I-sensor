@@ -1,5 +1,12 @@
 # FA-I / Proximity Sensor
-Sketches for interfacing Robotic Materials' FA-I tactile sensor, sensing arrays and multi-finger configurations. You will need a copy of the Arduino IDE and any compatible Arduino device that supports I2C, 3.3V and 5V. If you have ordered a kit from Robotic Materials Inc. that includes a Teensy LC or Teensy 3.5, you will need to install Teensyduino from https://www.pjrc.com/teensy/teensyduino.html.
+Sketches for interfacing Robotic Materials' FA-I tactile sensor, sensing arrays and multi-finger configurations. 
+<ul>
+<li>force_proximity_eval	Sketch for reading a single sensor (evaluation kit)
+<li>force_proximity_fingers	Sketch for reading multiple sensors via dedicated I2C channels (e.g. Kinova fingers)
+<li>force_proximity_multi Sketch for reading sensor arrays (e.g. Rethink Robotics grippers)
+</ul>
+
+You will need a copy of the Arduino IDE and any compatible Arduino device that supports I2C, 3.3V and 5V. If you have ordered a kit from Robotic Materials Inc. that includes a Teensy LC or Teensy 3.5, you will need to install Teensyduino from https://www.pjrc.com/teensy/teensyduino.html.
 
 Connect the Arduino/Teensy to your serial port and launch the serial plotter from the Arduino IDE. You should see something like this:
 
