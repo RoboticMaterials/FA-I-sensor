@@ -11,10 +11,7 @@
 #define WIRE Wire1
 
 
-
-
-//#include <Wire.h>     // Use this library for Arduino
-#include <i2c_t3.h>     // Use this library for Teensy
+#include <i2c_t3.h>     // Use <i2c_t3.h> for Teensy and <Wire.h> for Arduino
 #include <math.h>
 
 
