@@ -8,11 +8,12 @@
 */
 
 /***** Library parameters ****/
-//#define WIRE Wire1 // Use for Teensy boards
-#define WIRE Wire  // Use for Arduino
 
-#include <Wire.h> //<i2c_t3.h>     // Use <i2c_t3.h> for Teensy and <Wire.h> for Arduino
+#include <i2c_t3.h>     // Use <i2c_t3.h> for Teensy and <Wire.h> for Arduino
 #include <math.h>
+
+#define WIRE Wire1 // Use for Teensy boards
+//#define WIRE Wire  // Use for Arduino
 
 
 /***** USER PARAMETERS *****/
@@ -29,7 +30,7 @@
   H H L 118 (decimal), 76 (hexadecimal)
   H H H 119 (decimal), 77 (hexadecimal)
 */
-int i2c_multi_id = 113;
+int i2c_multi_id = 112;
 
 
 int ir_current_ = 8;                     // range = [0, 20]. current = value * 10 mA
@@ -83,7 +84,7 @@ void setup()
 
   // initialize each IR sensor
   for (int i = 0; i < 8; i++) {
-    if (i != 6) {
+    if (i != 7) {
       Serial.println(i);
       delay(50);
       //specify IR sensor
