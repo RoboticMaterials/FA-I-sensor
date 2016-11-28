@@ -119,8 +119,8 @@ void loop()
   if (continuous_mode || single_shot) {
     Serial.print(proximity_value);
     Serial.print(",");
-    //Serial.print(fa2);
-    //Serial.print(",");
+    Serial.print(fa2);
+    Serial.print(",");
     //Serial.print(",");
     //Serial.print(fa2derivative);
 
@@ -136,6 +136,8 @@ void loop()
           Serial.print("R");
         }
       }
+      else
+       Serial.print("0");
     }
   }
 
