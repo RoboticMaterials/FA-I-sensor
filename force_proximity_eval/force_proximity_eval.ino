@@ -63,7 +63,6 @@ void setup()
   WIRE.begin();
   delay(1000);
 
-  Wire.begin();
   writeByte(AMBIENT_PARAMETER, 0x7F);
   writeByte(IR_CURRENT, ir_current_);
   writeByte(PROXIMITY_MOD, 1); // 1 recommended by Vishay
@@ -183,13 +182,13 @@ byte writeByte(byte address, byte data)
 
 
 byte readByte(byte address) {
-  Wire.beginTransmission(VCNL4010_ADDRESS);
-  Wire.write(address);
+  WIRE.beginTransmission(VCNL4010_ADDRESS);
+  WIRE.write(address);
 
-  debug_endTransmission(Wire.endTransmission());
-  Wire.requestFrom(VCNL4010_ADDRESS, 1);
-  while (!Wire.available());
-  byte data = Wire.read();
+  debug_endTransmission(WIRE.endTransmission());
+  WIRE.requestFrom(VCNL4010_ADDRESS, 1);
+  while (!WIRE.available());
+  byte data = WIRE.read();
   return data;
 }
 
