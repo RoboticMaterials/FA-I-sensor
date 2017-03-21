@@ -1,3 +1,4 @@
+(cd src; git clone https://github.com/ros-drivers/rosserial.git )
 catkin build
 source devel/setup.bash
 echo Using '~/Arduino/libraries' as sketchbook directory.
