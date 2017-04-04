@@ -22,12 +22,12 @@
 #include <i2c_t3.h>     // Use <i2c_t3.h> for Teensy and <Wire.h> for Arduino
 #include <math.h>
 #include <ros.h>
-#include <force_proximity_ros/Proximity.h>
+#include <force_proximity_ros/ProximityStamped.h>
 
 
 /***** ROS *****/
 ros::NodeHandle  nh;
-force_proximity_ros::Proximity str_msg;
+force_proximity_ros::ProximityStamped str_msg;
 ros::Publisher proximity_sensor("proximity_sensor", &str_msg);
 
 /***** USER PARAMETERS *****/
@@ -93,13 +93,13 @@ void loop()
   fa2derivative = (signed int) average_value - proximity_value - fa2;
   fa2 = (signed int) average_value - proximity_value;
 
-  str_msg.proximity = proximity_value;
-  str_msg.average = average_value;
-  str_msg.fa2 = fa2;
-  str_msg.fa2derivative = fa2derivative;
-  if (fa2 < -sensitivity) str_msg.mode = "T";
-  else if (fa2 > sensitivity) str_msg.mode = "R";
-  else str_msg.mode = "0";
+  str_msg.proximity.proximity = proximity_value;
+  str_msg.proximity.average = average_value;
+  str_msg.proximity.fa2 = fa2;
+  str_msg.proximity.fa2derivative = fa2derivative;
+  if (fa2 < -sensitivity) str_msg.proximity.mode = "T";
+  else if (fa2 > sensitivity) str_msg.proximity.mode = "R";
+  else str_msg.proximity.mode = "0";
 
   proximity_sensor.publish( &str_msg );
 
