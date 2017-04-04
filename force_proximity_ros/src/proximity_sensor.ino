@@ -65,6 +65,7 @@ int touch_analysis = 1; //Default on
 
 void setup()
 {
+  nh.getHardware()->setBaud(57600);
   nh.initNode();
   nh.advertise(proximity_sensor);
 
