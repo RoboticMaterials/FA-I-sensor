@@ -22,13 +22,13 @@
 #include <i2c_t3.h>     // Use <i2c_t3.h> for Teensy and <Wire.h> for Arduino
 #include <math.h>
 #include <ros.h>
-#include <force_proximity_ros/Proximity.h>
+#include <force_proximity_ros/ProximityStamped.h>
 
 
 /***** ROS *****/
 ros::NodeHandle  nh;
-force_proximity_ros::Proximity str_msg;
-ros::Publisher proximity_sensor("proximity_sensor", &str_msg);
+force_proximity_ros::ProximityStamped prx_msg;
+ros::Publisher prx_pub("proximity_sensor", &prx_msg);
 
 /***** USER PARAMETERS *****/
 int ir_current_ = 8;                     // range = [0, 20]. current = value * 10 mA
@@ -65,8 +65,9 @@ int touch_analysis = 1; //Default on
 
 void setup()
 {
+  nh.getHardware()->setBaud(57600);
   nh.initNode();
-  nh.advertise(proximity_sensor);
+  nh.advertise(prx_pub);
 
   WIRE.begin();
   delay(1000);
@@ -93,15 +94,15 @@ void loop()
   fa2derivative = (signed int) average_value - proximity_value - fa2;
   fa2 = (signed int) average_value - proximity_value;
 
-  str_msg.proximity = proximity_value;
-  str_msg.average = average_value;
-  str_msg.fa2 = fa2;
-  str_msg.fa2derivative = fa2derivative;
-  if (fa2 < -sensitivity) str_msg.mode = "T";
-  else if (fa2 > sensitivity) str_msg.mode = "R";
-  else str_msg.mode = "0";
+  prx_msg.proximity.proximity = proximity_value;
+  prx_msg.proximity.average = average_value;
+  prx_msg.proximity.fa2 = fa2;
+  prx_msg.proximity.fa2derivative = fa2derivative;
+  if (fa2 < -sensitivity) prx_msg.proximity.mode = "T";
+  else if (fa2 > sensitivity) prx_msg.proximity.mode = "R";
+  else prx_msg.proximity.mode = "0";
 
-  proximity_sensor.publish( &str_msg );
+  prx_pub.publish(&prx_msg);
 
   //Serial.print(proximity_value);
   //Serial.print(",");

@@ -9,7 +9,11 @@ find_package(catkin REQUIRED COMPONENTS std_msgs message_generation)
 ################################################
 
 ## Generate messages in the 'msg' folder
-add_message_files(FILES Proximity.msg)
+add_message_files(FILES
+    Proximity.msg
+    ProximityStamped.msg
+    ProximityArray.msg
+)
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(DEPENDENCIES std_msgs)
