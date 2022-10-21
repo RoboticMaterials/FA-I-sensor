@@ -61,6 +61,9 @@ void setup()
   // Make config the same as proximity_sensor_vcnl4040.ino
   prox_sensor.setLEDCurrent(75);  // Set IR LED current to 75mA (set to 200mA in begin())
   prox_sensor.disableSmartPersistance();  // Disable smart persistence (enabled in begin())
+  // Such config methods may be too slow to be put in fast loop
+  // because they first read current data in register before writing new data.
+  // To avoid this, you should fix library in some way or use low-level methods instead of such methods
   delay(10);
   // Initialize variables
   proximity_value = prox_sensor.getProximity();
