@@ -64,11 +64,6 @@ void setup()
   // Such config methods may be too slow to be put in fast loop
   // because they first read current data in register before writing new data.
   // To avoid this, you should fix library in some way or use low-level methods instead of such methods
-  delay(10);
-  // Initialize variables
-  proximity_value = prox_sensor.getProximity();
-  average_value = proximity_value;
-  fa2 = 0;
 
   // Start pressure sensor
   press_sensor.begin();
@@ -76,6 +71,12 @@ void setup()
   {
     while (1); // Freeze!
   }
+
+  // Get first proximity after all sensors are up and power line becomes stabilized
+  delay(10);  // This duration is not tuned well
+  proximity_value = prox_sensor.getProximity();
+  average_value = proximity_value;
+  fa2 = 0;
 }
 
 void loop()
